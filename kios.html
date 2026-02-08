@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REYGAMES - Top Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .selected { border: 2px solid #ef4444 !important; background-color: #313a49; position: relative; }
+        .selected::after { content: '✓'; position: absolute; top: 2px; right: 5px; color: #ef4444; font-weight: bold; font-size: 10px; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #ef4444; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .modal-bg { background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(10px); }
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    </style>
+</head>
+<body class="bg-[#1a202c] text-white font-sans pb-32">
+
+    <script>
+        // PENGATURAN OWNER
+        const NOMOR_WA_OWNER = "6285602834184";
+        const KODE_PROMO_VALID = "ZANGANTENG";
+    </script>
+
+    <header class="bg-[#2d3748] p-4 flex items-center border-b border-gray-700 sticky top-0 z-10 shadow-lg">
+        <div class="bg-red-600 p-1.5 rounded mr-3 shadow-lg"><span class="font-black text-white italic">R</span></div>
+        <div>
+            <p class="text-[10px] text-gray-400 leading-none uppercase tracking-widest">Top Up Resmi</p>
+            <p class="font-black text-sm tracking-tighter uppercase">REYGAMES</p>
+        </div>
+    </header>
+
+    <main class="p-4 space-y-4 max-w-md mx-auto">
+        <section class="bg-[#2d3748] rounded-2xl p-5 border border-gray-700 shadow-xl">
+            <div class="flex items-center mb-4">
+                <span class="bg-red-600 text-white rounded-lg w-6 h-6 flex items-center justify-center text-xs font-bold mr-3">1</span>
+                <h2 class="font-bold text-sm uppercase">Masukkan Data Akun</h2>
+            </div>
+            <div class="space-y-3">
+                <input type="number" id="playerID" placeholder="Masukkan Player ID" class="w-full bg-[#1a202c] border border-gray-600 rounded-xl p-3.5 text-sm focus:outline-none focus:border-red-500 text-white">
+                <input type="number" id="waUser" placeholder="Nomor WhatsApp (Opsional)" class="w-full bg-[#1a202c] border border-gray-600 rounded-xl p-3.5 text-sm focus:outline-none focus:border-red-500 text-white">
+            </div>
+        </section>
+
+        <section class="bg-[#2d3748] rounded-2xl p-5 border border-gray-700 shadow-xl">
+            <div class="flex items-center mb-4">
+                <span class="bg-red-600 text-white rounded-lg w-6 h-6 flex items-center justify-center text-xs font-bold mr-3">2</span>
+                <h2 class="font-bold text-sm uppercase">Pilih Nominal</h2>
+            </div>
+            <div class="grid grid-cols-3 gap-2" id="diamond-grid">
+                </div>
+        </section>
+
+        <section class="bg-[#2d3748] rounded-2xl p-5 border border-gray-700 shadow-xl">
+            <div class="flex items-center mb-4">
+                <span class="bg-red-600 text-white rounded-lg w-6 h-6 flex items-center justify-center text-xs font-bold mr-3">3</span>
+                <h2 class="font-bold text-sm uppercase">Pilih Pembayaran</h2>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-bold uppercase">
+                <div onclick="setPay(this, 'GoPay')" class="bg-[#1a202c] border border-gray-700 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-blue-400">GOPAY</div>
+                <div onclick="setPay(this, 'DANA')" class="bg-[#1a202c] border border-gray-700 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-blue-500">DANA</div>
+                <div onclick="setPay(this, 'OVO')" class="bg-[#1a202c] border border-gray-700 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-purple-400">OVO</div>
+                <div onclick="setPay(this, 'ShopeePay')" class="bg-[#1a202c] border border-gray-700 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-orange-500">SHOPEEPAY</div>
+                <div onclick="setPay(this, 'Bank Transfer')" class="bg-[#1a202c] border border-gray-700 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-gray-300">BANK (ATM)</div>
+                <div onclick="setPay(this, 'Pulsa')" class="bg-[#1a202c] border border-gray-700 rounded-xl p-3 flex flex-col items-center justify-center cursor-pointer text-gray-300">PULSA</div>
+            </div>
+        </section>
+
+        <section class="bg-[#2d3748] rounded-2xl p-5 border border-gray-700 shadow-xl mb-6">
+            <div class="flex items-center mb-4">
+                <span class="bg-red-600 text-white rounded-lg w-6 h-6 flex items-center justify-center text-xs font-bold mr-3">4</span>
+                <h2 class="font-bold text-sm uppercase">Kode Promo</h2>
+            </div>
+            <div class="flex gap-2">
+                <input type="text" id="promoInput" placeholder="ZANGANTENG" class="flex-1 bg-[#1a202c] border border-gray-600 rounded-xl p-3 text-sm focus:outline-none focus:border-red-500 uppercase text-white">
+                <button onclick="applyPromo()" class="bg-blue-600 px-5 rounded-xl font-bold text-xs uppercase active:scale-95 transition-all">Pakai</button>
+            </div>
+            <p id="promoMsg" class="text-[10px] mt-2 ml-1 font-bold min-h-[15px]"></p>
+        </section>
+    </main>
+
+    <footer class="fixed bottom-0 left-0 right-0 bg-[#2d3748] border-t border-gray-700 p-4 flex justify-between items-center z-40 shadow-2xl">
+        <div>
+            <p id="fPrice" class="text-red-500 font-black text-lg leading-none">Rp 0</p>
+            <p id="fProd" class="text-[10px] text-gray-400 font-medium mt-1 italic">Pilih Diamond...</p>
+        </div>
+        <button onclick="bayar()" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3.5 rounded-2xl font-black text-sm transition-all shadow-lg uppercase">Beli Sekarang</button>
+    </footer>
+
+    <div id="overlay" class="hidden fixed inset-0 z-[100] modal-bg flex items-center justify-center p-4">
+        <div id="popLoad" class="text-center">
+            <div class="loader mx-auto mb-6"></div>
+            <h2 class="text-2xl font-black italic uppercase">Proses Transaksi...</h2>
+        </div>
+
+        <div id="popSuccess" class="hidden bg-[#2d3748] w-full max-w-sm rounded-[2.5rem] p-8 border border-gray-600 shadow-2xl">
+            <div class="flex flex-col items-center mb-6">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4 border-4 border-[#1a202c] shadow-lg">
+                    <span class="text-white text-3xl font-bold italic">✓</span>
+                </div>
+                <h1 class="text-xl font-black italic uppercase tracking-tighter">Berhasil!</h1>
+            </div>
+            
+            <div id="strukContent" class="space-y-3 text-[10px] border-y border-gray-700/50 py-5"></div>
+
+            <button onclick="sendWA()" class="w-full bg-green-600 mt-8 py-4 rounded-xl font-black text-[11px] uppercase shadow-lg active:scale-95 flex items-center justify-center gap-2">
+                <span>Konfirmasi via WhatsApp</span>
+            </button>
+            <button onclick="location.reload()" class="w-full text-gray-500 mt-3 text-[10px] font-bold uppercase">Tutup</button>
+        </div>
+    </div>
+
+    <script>
+        const dmData = [
+            {d:'5', p:1000}, {d:'12', p:2000}, {d:'50', p:8000}, {d:'70', p:10000},
+            {d:'91', p:13000}, {d:'140', p:20000}, {d:'355', p:50000}, {d:'720', p:100000},
+            {d:'1.450', p:200000}, {d:'2.180', p:300000}, {d:'3.640', p:500000},
+            {d:'7.290', p:1000000}, {d:'36.500', p:5000000}, {d:'73.100', p:10000000}
+        ];
+
+        let choice = { dm: '', pr: 0, pay: 'GoPay', disc: 0, trxId: '' };
+
+        const grid = document.getElementById('diamond-grid');
+        dmData.forEach(item => {
+            grid.innerHTML += `
+                <div onclick="set(this, '${item.d}', ${item.p})" class="bg-[#1a202c] border border-gray-700 rounded-xl p-2 cursor-pointer text-center hover:border-red-500 transition-all">
+                    <p class="text-blue-400 font-bold text-[11px]">💎${item.d}</p>
+                    <p class="text-red-500 text-[9px] font-bold">Rp ${item.p.toLocaleString('id-ID')}</p>
+                </div>
+            `;
+        });
+
+        function set(el, d, p) {
+            document.querySelectorAll('#diamond-grid div').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            choice.dm = d; choice.pr = p;
+            updateDisplay();
+        }
+
+        function setPay(el, p) {
+            document.querySelectorAll('.grid div, .grid-cols-2 div').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            choice.pay = p;
+        }
+
+        function applyPromo() {
+            const input = document.getElementById('promoInput');
+            const msg = document.getElementById('promoMsg');
+            if (input.value.toUpperCase() === KODE_PROMO_VALID) {
+                choice.disc = 0.10;
+                msg.innerText = "✅ PROMO AKTIF: DISKON 10%";
+                msg.className = "text-[10px] mt-2 ml-1 text-green-400 font-bold uppercase";
+            } else {
+                choice.disc = 0;
+                msg.innerText = "❌ KODE TIDAK VALID";
+                msg.className = "text-[10px] mt-2 ml-1 text-red-400 font-bold uppercase";
+            }
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            if (!choice.pr) return;
+            const final = choice.pr - (choice.pr * choice.disc);
+            document.getElementById('fPrice').innerText = "Rp " + final.toLocaleString('id-ID');
+            let prodText = "FF " + choice.dm + " Diamond";
+            if(choice.disc > 0) {
+                prodText += ` <span class="line-through text-gray-500 ml-1">Rp ${choice.pr.toLocaleString('id-ID')}</span>`;
+            }
+            document.getElementById('fProd').innerHTML = prodText;
+        }
+
+        function bayar() {
+            const id = document.getElementById('playerID').value;
+            if(!choice.dm || !id) return alert("⚠️ Masukkan Player ID & Pilih Nominal!");
+
+            document.getElementById('overlay').classList.remove('hidden');
+            choice.trxId = "RG-" + Math.floor(Math.random() * 90000000 + 10000000);
+            const final = choice.pr - (choice.pr * choice.disc);
+            
+            setTimeout(() => {
+                document.getElementById('popLoad').classList.add('hidden');
+                document.getElementById('strukContent').innerHTML = `
+                    <div class="flex justify-between uppercase"><span>Tanggal</span><span>${new Date().toLocaleString('id-ID')}</span></div>
+                    <div class="flex justify-between uppercase"><span>ID Transaksi</span><span>${choice.trxId}</span></div>
+                    <div class="flex justify-between uppercase"><span>Jenis</span><span>Free Fire</span></div>
+                    <div class="flex justify-between uppercase"><span>Player ID</span><span class="text-blue-400 font-black tracking-widest">${id}</span></div>
+                    <div class="flex justify-between uppercase"><span>Jumlah</span><span>${choice.dm} Diamond</span></div>
+                    <div class="flex justify-between uppercase"><span>Metode</span><span>${choice.pay}</span></div>
+                    <div class="flex justify-between uppercase"><span>Harga</span><span>Rp ${choice.pr.toLocaleString('id-ID')}</span></div>
+                    <div class="border-t border-gray-700 my-2"></div>
+                    <div class="flex justify-between font-black text-sm uppercase"><span>Total Bayar</span><span class="text-red-500 italic text-lg">Rp ${final.toLocaleString('id-ID')}</span></div>
+                `;
+                document.getElementById('popSuccess').classList.remove('hidden');
+            }, 2000);
+        }
+
+        function sendWA() {
+            const id = document.getElementById('playerID').value;
+            const final = choice.pr - (choice.pr * choice.disc);
+            const text = `Halo REYGAMES, saya ingin konfirmasi top up:%0A%0A` +
+                         `*ID Transaksi:* ${choice.trxId}%0A` +
+                         `*Game:* Free Fire%0A` +
+                         `*Player ID:* ${id}%0A` +
+                         `*Nominal:* ${choice.dm} Diamond%0A` +
+                         `*Pembayaran:* ${choice.pay}%0A` +
+                         `*Total Bayar:* Rp ${final.toLocaleString('id-ID')}%0A%0A` +
+                         `Mohon diproses, terima kasih!`;
+            
+            window.open(`https://wa.me/${NOMOR_WA_OWNER}?text=${text}`, '_blank');
+        }
+    </script>
+</body>
+</html>
